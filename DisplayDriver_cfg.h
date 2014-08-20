@@ -13,9 +13,6 @@
 #define DISPLAYDRIVER_COLOR_LATCH 10  /* named RCLKA on board */
 #define DISPLAYDRIVER_RED_DATA    11  /* named SERC on board */
 
-#define DISPLAYDRIVER_SHIFTORDER  MSBFIRST
-
-/* no need to change values below this line */
-#define DISPLAYDRIVER_CLEARDISPLAY  0xff
+#define DISPLAYDRIVER_SHIFTORDER  LSBFIRST
 
 #endif

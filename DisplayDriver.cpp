@@ -20,9 +20,13 @@ DisplayDriver::DisplayDriver( void )
 /**
  * Pattern to display with next update command
  **/
-void DisplayDriver::setPattern(uint16_t pattern[])
+void DisplayDriver::setPattern(displayPattern_t pattern)
 {
-  memcpy( displayRAM, pattern, sizeof(displayRAM) ); 
+  /* Can't use memcpy because pattern needs to be inverted */
+  for (int i=0; i<sizeof(displayPattern_t)/sizeof(displayLine_t); i++)
+  {
+    displayRAM[i] = ~pattern[i];
+  }
 }
 
 /**
@@ -56,8 +60,8 @@ void DisplayDriver::update(void)
 
     /* now output data for this row */
     digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
-    shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] >> 8 );
     shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] );
+    shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] >> 8 );
     digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
   }
 }
