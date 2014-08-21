@@ -15,6 +15,16 @@ Toughts:
 #include "DisplayDriver.h"
 
 //#define DEBUG
+/* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
+ * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
+ * delay() call.
+ */
+#define DEBUG_RUNTIME_MEASUREMENT
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+#define RUNTIME_ISR_PIN  2
+#define RUNTIME_LOOP_PIN 3
+#endif
+
 
 displayPattern_t clockPattern = {
   0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
@@ -93,8 +103,6 @@ minutesToWordPatternMapping_t minutesToWordPatternMapping[] = {
 
 time_t currentTime;
 
-
-
 /* ************************ Function prototypes ************************ */
 void updateDisplayISR();
 #ifdef DEBUG
@@ -103,20 +111,30 @@ void serialPrintBinary(uint16_t);
 #endif
 
 /* ************************ Defines ************************************ */
-#define TIMER_DELAY              64
-#define TIME_UPDATE_DELAY_TIME   10*1000   /* time should be updated every 10 seconds */
+#define DISPLAY_REFRESHTIME      150*1000   /* Timer1 perdiod is measured in microseconds (10e-6) */
+#define TIME_UPDATE_DELAY_TIME   10*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
 
 void setup()
 {
-  //Timer1.initialize(TIMER_DELAY); /* Timer for cyclic update of display content  */
-  //Timer1.attachInterrupt(updateDisplayISR);
+  
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
+  Timer1.attachInterrupt(updateDisplayISR);
   currentTime = now();
 
 #ifdef DEBUG
   Serial.begin(9600);
 #endif
 
-  setTime(14, 44, 40 ,19 , 8, 2014);
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  pinMode(RUNTIME_ISR_PIN, OUTPUT);
+  digitalWrite(RUNTIME_ISR_PIN, LOW);
+  pinMode(RUNTIME_LOOP_PIN, OUTPUT);
+  digitalWrite(RUNTIME_LOOP_PIN, LOW);
+#endif
+
+  setTime(16, 9, 10 ,19 , 8, 2014);
 }
 
 /** TODO:
@@ -126,7 +144,18 @@ void setup()
 void loop()
 {
   int currentHour, currentMinute;
-  
+ 
+#if 1
+  static int ledstate = LOW;
+  if (ledstate == LOW) ledstate = HIGH;
+  else ledstate = LOW;
+  digitalWrite(LED_BUILTIN, ledstate);
+#endif
+
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_LOOP_PIN, HIGH);
+#endif
+
   currentTime = now();
   currentHour = hour(currentTime);
   currentMinute = minute(currentTime);
@@ -173,12 +202,21 @@ void loop()
 #ifdef DEBUG
   digitalClockDisplay();
 #endif
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_LOOP_PIN, LOW);
+#endif
   delay(TIME_UPDATE_DELAY_TIME);  
 }
 
 void updateDisplayISR()
 {
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_ISR_PIN, HIGH);
+#endif
   displayDriver.update();
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_ISR_PIN, LOW);
+#endif
 }
 
 #ifdef DEBUG
@@ -203,7 +241,9 @@ void digitalClockDisplay(){
   Serial.println();
   Serial.println();
 }
+#endif
 
+#ifdef DEBUG
 void serialPrintBinary(uint16_t content)
 {
   for (int i=0; i<16; i++)
