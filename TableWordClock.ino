@@ -197,7 +197,6 @@ void loop()
   clockPattern[row + 1] |= tableClockWordPattern[16].pattern;
   
   displayDriver.setPattern(clockPattern);
-  displayDriver.update();
   
 #ifdef DEBUG
   digitalClockDisplay();
