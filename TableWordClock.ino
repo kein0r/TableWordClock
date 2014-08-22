@@ -223,8 +223,6 @@ void digitalClockDisplay(){
   for (int i=0; i<16; i++)
   {
     serialPrintBinary(clockPattern[i]);
-    Serial.print(" -> ");
-    Serial.print(clockPattern[i], BIN);
     Serial.println();
   }
   // digital clock display of the time
