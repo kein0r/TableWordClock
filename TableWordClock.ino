@@ -14,7 +14,11 @@ Toughts:
 #include "TableWordClock.h"
 #include "DisplayDriver.h"
 
-//#define DEBUG
+/* ************************ Defines ************************************ */
+#define DISPLAY_REFRESHTIME      50*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
+#define TIME_UPDATE_DELAY_TIME   10*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
+
+#define DEBUG
 /* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
@@ -24,7 +28,6 @@ Toughts:
 #define RUNTIME_ISR_PIN  2
 #define RUNTIME_LOOP_PIN 3
 #endif
-
 
 displayPattern_t clockPattern = {
   0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
@@ -110,22 +113,19 @@ void digitalClockDisplay();
 void serialPrintBinary(uint16_t);
 #endif
 
-/* ************************ Defines ************************************ */
-#define DISPLAY_REFRESHTIME      150*1000   /* Timer1 perdiod is measured in microseconds (10e-6) */
-#define TIME_UPDATE_DELAY_TIME   10*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
-
 void setup()
-{
+{  
+  long test;
   
+#ifdef DEBUG
+  Serial.begin(9600);
+#endif
+
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
   Timer1.attachInterrupt(updateDisplayISR);
   currentTime = now();
-
-#ifdef DEBUG
-  Serial.begin(9600);
-#endif
 
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   pinMode(RUNTIME_ISR_PIN, OUTPUT);

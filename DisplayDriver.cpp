@@ -45,17 +45,19 @@ void DisplayDriver::update(void)
     digitalWrite(DISPLAYDRIVER_ROW_LATCH, LOW);
     digitalWrite(DISPLAYDRIVER_ROW_CLK, LOW);
 
+#ifdef DISPLAYDRIVER_CLEARDISPLAYBEFOREUPDATE
     /* first clear display to avoid ghost effects */
     digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
     shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, DISPLAYDRIVER_CLEARDISPLAY);
     shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, DISPLAYDRIVER_CLEARDISPLAY);
     digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
+#endif
 
     /* select row */
     /* generate clock pulse to shift row by one */
     digitalWrite(DISPLAYDRIVER_ROW_CLK, HIGH);
     digitalWrite(DISPLAYDRIVER_ROW_LATCH, HIGH);
-    /* remove high on row clock pin */
+    /* set clock pin low again */
     digitalWrite(DISPLAYDRIVER_ROW_DATA, LOW);
 
     /* now output data for this row */
