@@ -61,10 +61,14 @@ void DisplayDriver::update(void)
     digitalWrite(DISPLAYDRIVER_ROW_DATA, LOW);
 
     /* now output data for this row */
-    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
-    shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] );
-    shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] >> 8 );
-    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
+    if (displayRAM[rowCounter] != DISPLAYDRIVER_CLEARDISPLAY)
+    {
+      digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
+      shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] );
+      shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, displayRAM[rowCounter] >> 8 );
+      digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
+      //__asm__("nop\n\t""nop\n\t""nop\n\t""nop\n\t");
+    };
   }
 }
 

@@ -15,7 +15,7 @@ Toughts:
 #include "DisplayDriver.h"
 
 /* ************************ Defines ************************************ */
-#define DISPLAY_REFRESHTIME      50*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
+#define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
 #define TIME_UPDATE_DELAY_TIME   10*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
 
 #define DEBUG
@@ -134,7 +134,7 @@ void setup()
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
 #endif
 
-  setTime(16, 9, 10 ,19 , 8, 2014);
+  setTime(16, 14, 10 ,19 , 8, 2014);
 }
 
 /** TODO:

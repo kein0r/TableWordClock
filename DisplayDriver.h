@@ -12,7 +12,7 @@
 typedef uint16_t displayLine_t;
 typedef displayLine_t displayPattern_t[16];
 
-#define DISPLAYDRIVER_CLEARDISPLAY  0xff
+#define DISPLAYDRIVER_CLEARDISPLAY  0xffff
 
 class DisplayDriver
 {
