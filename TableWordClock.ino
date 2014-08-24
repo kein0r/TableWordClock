@@ -18,7 +18,7 @@ Toughts:
 
 /* ************************ Defines ************************************ */
 #define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
-#define TIME_UPDATE_DELAY_TIME   10*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
+#define TIME_UPDATE_DELAY_TIME   5*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
 
 #define DEBUG
 /* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
