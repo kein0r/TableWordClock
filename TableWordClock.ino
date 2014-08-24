@@ -11,8 +11,10 @@ Toughts:
  */
 #include <TimerOne.h>
 #include <Time.h>
+#include <Wire.h>
 #include "TableWordClock.h"
 #include "DisplayDriver.h"
+#include "DS3231RTC.h"
 
 /* ************************ Defines ************************************ */
 #define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
@@ -53,7 +55,7 @@ tableClockWordPattern_t tableClockWordPattern[] =
   { 6, 0x003f}, /* 6 (o'clock) ->                  0000 0000 0011 1111 */
   { 8, 0xf000}, /* 5 (o'clock) ->                  1111 0000 0000 0000 */
   /* 0 o'lock is missing ??? */
-  { 8, 0x003f}, /* 9 (o'clock) ->                  0000 0000 0011 1111 */
+  { 8, 0x00fc}, /* 9 (o'clock) ->                  0000 0000 1111 1100 */
   {10, 0xf000}, /* 7 (o'clock) ->                  1111 0000 0000 0000 */
   {10, 0x0f00}, /* 8 (o'clock) ->                  0000 1111 0000 0000 */
   {10, 0x00ff}, /* (xx) o'clock ->                 0000 0000 1111 1111 */
@@ -118,7 +120,7 @@ void setup()
   long test;
   
 #ifdef DEBUG
-  Serial.begin(9600);
+  Serial.begin(115200);
 #endif
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -134,7 +136,10 @@ void setup()
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
 #endif
 
-  setTime(16, 14, 10 ,19 , 8, 2014);
+  /* set time manually. Use date +%s to get it in UTC format. You need to add local time zone. */
+  /*RTC.set(1408852621L + (8*60*60L));
+  setTime(1408852621L + (8*60*60L));*/
+  setSyncProvider(RTC.get); // the function to get the time from the RTC
 }
 
 /** TODO:
@@ -227,14 +232,16 @@ void digitalClockDisplay(){
   }
   // digital clock display of the time
   Serial.print(hour());
+  Serial.print(":");
   Serial.print(minute());
+  Serial.print(":");
   Serial.print(second());
-  Serial.print(" ");
+/*  Serial.print(" ");
   Serial.print(day());
   Serial.print(" ");
   Serial.print(month());
   Serial.print(" ");
-  Serial.print(year()); 
+  Serial.print(year()); */
   Serial.println();
   Serial.println();
 }
