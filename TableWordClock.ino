@@ -111,7 +111,7 @@ time_t currentTime;
 /* ************************ Function prototypes ************************ */
 void updateDisplayISR();
 #ifdef DEBUG
-void digitalClockDisplay();
+void digitalClockDisplay(tmElements_t &t);
 void serialPrintBinary(uint16_t);
 #endif
 
@@ -147,8 +147,9 @@ void setup()
  */
 
 void loop()
-{
-  int currentHour, currentMinute;
+{  
+ tmElements_t currentTime;
+ uint8_t row;
  
 #if 1
   static int ledstate = LOW;
@@ -161,10 +162,7 @@ void loop()
   digitalWrite(RUNTIME_LOOP_PIN, HIGH);
 #endif
 
-  currentTime = now();
-  currentHour = hour(currentTime);
-  currentMinute = minute(currentTime);
-  uint8_t row;
+  RTC.read(currentTime);
 
   /* erase clock pattern */
   memset(clockPattern, 0x0000, sizeof(displayPattern_t));
@@ -172,7 +170,7 @@ void loop()
   /* set minutes */
   for (int i=0; i < sizeof(minutesToWordPatternMapping)/sizeof(minutesToWordPatternMapping_t); i++)
   {
-    if ( ( currentMinute >= minutesToWordPatternMapping[i].from ) && ( currentMinute <= minutesToWordPatternMapping[i].to ) )
+    if ( ( currentTime.Minute >= minutesToWordPatternMapping[i].from ) && ( currentTime.Minute <= minutesToWordPatternMapping[i].to ) )
     {
       row = minutesToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
@@ -182,14 +180,14 @@ void loop()
   
    /* If minutes are greater than 39, clock switches to XXX before YYY. Thus we need to increase hour 
    * by one */
-  if (currentMinute >= 40)
-    currentHour++;
+  if (currentTime.Minute >= 40)
+    currentTime.Hour++;
   /* make sure clock stays within 0 ... 11 */
-  currentHour = currentHour % 12;
+  currentTime.Hour %= 12;
   
   for (int i=0; i < sizeof(hoursToWordPatternMapping)/sizeof(hoursToWordPatternMapping_t); i++)
   {
-    if ( currentHour ==  hoursToWordPatternMapping[i].hour)
+    if ( currentTime.Hour ==  hoursToWordPatternMapping[i].hour)
     {
       row = hoursToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
@@ -204,7 +202,7 @@ void loop()
   displayDriver.setPattern(clockPattern);
   
 #ifdef DEBUG
-  digitalClockDisplay();
+  digitalClockDisplay(currentTime);
 #endif
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
@@ -224,24 +222,24 @@ void updateDisplayISR()
 }
 
 #ifdef DEBUG
-void digitalClockDisplay(){
+void digitalClockDisplay(tmElements_t &t){
   for (int i=0; i<16; i++)
   {
     serialPrintBinary(clockPattern[i]);
     Serial.println();
   }
   // digital clock display of the time
-  Serial.print(hour());
+  Serial.print(t.Hour);
   Serial.print(":");
-  Serial.print(minute());
+  Serial.print(t.Minute);
   Serial.print(":");
-  Serial.print(second());
+  Serial.print(t.Second);
 /*  Serial.print(" ");
-  Serial.print(day());
+  Serial.print(t.Day);
   Serial.print(" ");
-  Serial.print(month());
+  Serial.print(t.Month);
   Serial.print(" ");
-  Serial.print(year()); */
+  Serial.print(t.Year); */
   Serial.println();
   Serial.println();
 }
