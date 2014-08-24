@@ -6,6 +6,7 @@ Toughts:
  * !!!!!!!!
  * This sketch needs the following non-standard libraries (install them in the Arduino library directory):
  * TimerOne: http://www.arduino.cc/playground/Code/Timer1
+ * Time: http://playground.arduino.cc/Code/Time (used in DS2321RTC lib)
  * !!!!!!!!
  
  */
@@ -25,7 +26,7 @@ Toughts:
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
  */
-#define DEBUG_RUNTIME_MEASUREMENT
+//#define DEBUG_RUNTIME_MEASUREMENT
 #ifdef DEBUG_RUNTIME_MEASUREMENT
 #define RUNTIME_ISR_PIN  2
 #define RUNTIME_LOOP_PIN 3
