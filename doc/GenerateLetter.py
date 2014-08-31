@@ -31,7 +31,7 @@ for row in range(0, 8):
         plm.Base=FreeCAD.Vector(column * boxWidthHeight + xOffset, row * boxWidthHeight + yOffset, 0.0)
       else:
         ss=Draft.makeShapeString(String=u"\u4e24",FontFile="/usr/share/fonts/truetype/DroidSansFallbackFull.ttf",Size=fontSize / 37.72 * 6,Tracking=0)
-        plm.Base=FreeCAD.Vector(column * boxWidthHeight + xOffset-2.4, row * boxWidthHeight + yOffset-0.2,2, 0.0)
+        plm.Base=FreeCAD.Vector(column * boxWidthHeight + xOffset-2.4, row * boxWidthHeight + yOffset-0.2,0.0)
       plm.Rotation.Q=(0.0, 0.0, 0.0, 1.0)
       ss.Placement=plm
       ss.Support=None
