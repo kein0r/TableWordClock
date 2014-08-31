@@ -1,4 +1,3 @@
-
 letter = [['k', 'è','b', 'à', 'n', 'f', 'ē', 'n'],
           ['y', 'ī', 'è', 'r', ' ', 's', 'h', 'í'],
           ['q', 'ī', 'b', 'a', 'd', 'i', 'ǎ', 'n'],
@@ -26,9 +25,13 @@ fontString = "/usr/share/fonts/truetype/DejaVuSansMono-Bold.ttf"
 for row in range(0, 8):
   for column in range(0,8):
     if letter[row][column] != ' ':
-      ss=Draft.makeShapeString(String=letter[row][column],FontFile=fontString,Size=fontSize,Tracking=0)
       plm=FreeCAD.Placement()
-      plm.Base=FreeCAD.Vector(column * boxWidthHeight + xOffset, row * boxWidthHeight + yOffset, 0.0)
+      if letter[row][column] != 'X':
+        ss=Draft.makeShapeString(String=letter[row][column],FontFile=fontString,Size=fontSize,Tracking=0)
+        plm.Base=FreeCAD.Vector(column * boxWidthHeight + xOffset, row * boxWidthHeight + yOffset, 0.0)
+      else:
+        ss=Draft.makeShapeString(String=u"\u4e24",FontFile="/usr/share/fonts/truetype/DroidSansFallbackFull.ttf",Size=fontSize / 37.72 * 6,Tracking=0)
+        plm.Base=FreeCAD.Vector(column * boxWidthHeight + xOffset-2.4, row * boxWidthHeight + yOffset-0.2,2, 0.0)
       plm.Rotation.Q=(0.0, 0.0, 0.0, 1.0)
       ss.Placement=plm
       ss.Support=None
