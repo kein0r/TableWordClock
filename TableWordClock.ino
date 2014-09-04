@@ -19,17 +19,23 @@ Toughts:
 
 /* ************************ Defines ************************************ */
 #define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
-#define TIME_UPDATE_DELAY_TIME   5*1000   /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
+#define TIME_UPDATE_DELAY_TIME   1*1000     /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
 
-#define DEBUG
+#define CLOCKSET_PIN                  1
+#define CLOCKSET_HOUR_INCREMENT_PIN   2  /* pin 2 uses int.0 */
+#define CLOCKSET_HOUR_PIN_INT         0
+#define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
+#define CLOCKSET_MINUTE_PIN_INT       1
+
+//#define DEBUG
 /* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
  */
 //#define DEBUG_RUNTIME_MEASUREMENT
 #ifdef DEBUG_RUNTIME_MEASUREMENT
-#define RUNTIME_ISR_PIN  2
-#define RUNTIME_LOOP_PIN 3
+#define RUNTIME_ISR_PIN  0
+#define RUNTIME_LOOP_PIN 4
 #endif
 
 displayPattern_t clockPattern = {
@@ -40,7 +46,7 @@ displayPattern_t clockPattern = {
 DisplayDriver displayDriver;
 
 /* patterns for words. Should be maybe reordered to make show hours easier */
-tableClockWordPattern_t tableClockWordPattern[] = 
+static const tableClockWordPattern_t tableClockWordPattern[] = 
 {
   { 0, 0xfc00}, /* (xxx minutes/quarter) to ->     1111 1100 0000 0000 */
   { 0, 0x03c0}, /* 2(0 minutes to) ->              0000 0011 1100 0000 */
@@ -107,9 +113,13 @@ minutesToWordPatternMapping_t minutesToWordPatternMapping[] = {
   {50, 59,  4}, /* minutes */
 };
 
-time_t currentTime;
+boolean writeTime = false;    /* whenever this variable is set to true current time will be writte to RTC in main loop */
+tmElements_t currentTime;
 
 /* ************************ Function prototypes ************************ */
+
+void incrementHourISR();
+void incrementMinuteISR();
 void updateDisplayISR();
 #ifdef DEBUG
 void digitalClockDisplay(tmElements_t &t);
@@ -126,9 +136,15 @@ void setup()
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+  /* configure input buttons */
+  pinMode(CLOCKSET_PIN, INPUT_PULLUP);
+  pinMode(CLOCKSET_HOUR_INCREMENT_PIN, INPUT_PULLUP);
+  attachInterrupt(CLOCKSET_HOUR_PIN_INT, incrementHourISR, RISING);
+  pinMode(CLOCKSET_MINUTE_INCREMENT_PIN, INPUT_PULLUP);
+  attachInterrupt(CLOCKSET_MINUTE_PIN_INT, incrementMinuteISR, RISING);
+  
   Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
   Timer1.attachInterrupt(updateDisplayISR);
-  currentTime = now();
 
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   pinMode(RUNTIME_ISR_PIN, OUTPUT);
@@ -138,9 +154,7 @@ void setup()
 #endif
 
   /* set time manually. Use date +%s to get it in UTC format. You need to add local time zone. */
-  /*RTC.set(1408852621L + (8*60*60L));
-  setTime(1408852621L + (8*60*60L));*/
-  setSyncProvider(RTC.get); // the function to get the time from the RTC
+  /* RTC.set(1408852621L + (8*60*60L)); */
 }
 
 /** TODO:
@@ -149,7 +163,6 @@ void setup()
 
 void loop()
 {  
- tmElements_t currentTime;
  uint8_t row;
  
 #if 1
@@ -163,7 +176,15 @@ void loop()
   digitalWrite(RUNTIME_LOOP_PIN, HIGH);
 #endif
 
-  RTC.read(currentTime);
+  if (writeTime)
+  {
+    RTC.write(currentTime);
+    writeTime = false;
+  }
+  else
+  {
+    RTC.read(currentTime);
+  }
 
   /* erase clock pattern */
   memset(clockPattern, 0x0000, sizeof(displayPattern_t));
@@ -195,12 +216,14 @@ void loop()
       clockPattern[tableClockWordPattern[row].displayRow + 1] |= tableClockWordPattern[row].pattern;
     }
   }
+  if (currentTime.Minute >= 40)
+    currentTime.Hour--;
   /* display o'clock always */
   row = tableClockWordPattern[16].displayRow;
   clockPattern[row] |= tableClockWordPattern[16].pattern;
   clockPattern[row + 1] |= tableClockWordPattern[16].pattern;
   
-  displayDriver.setPattern(clockPattern);
+  displayDriver.setPattern(clockPattern);  
   
 #ifdef DEBUG
   digitalClockDisplay(currentTime);
@@ -221,6 +244,26 @@ void updateDisplayISR()
   digitalWrite(RUNTIME_ISR_PIN, LOW);
 #endif
 }
+
+void incrementHourISR()
+{
+  if (writeTime == false)
+  {
+    currentTime.Hour++;
+    currentTime.Hour %= 12;
+    writeTime = true;
+  }
+}
+
+void incrementMinuteISR(){
+  if (writeTime == false)
+  {
+    currentTime.Minute++;
+    currentTime.Minute %= 60;
+    writeTime = true;
+  }
+}
+
 
 #ifdef DEBUG
 void digitalClockDisplay(tmElements_t &t){
