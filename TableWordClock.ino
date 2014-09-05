@@ -128,7 +128,6 @@ void serialPrintBinary(uint16_t);
 
 void setup()
 {  
-  long test;
   
 #ifdef DEBUG
   Serial.begin(DEBUG_SERIAL_BAUDRATE);
