@@ -22,7 +22,12 @@ Toughts:
 #define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
 #define CLOCKSET_MINUTE_PIN_INT       1
 
+/* DEBUG output via serial line. Display will not work but shortly flash because delay
+ * of 500 ms is added to main loop */
 //#define DEBUG
+#ifdef DEBUG
+#define DEBUG_SERIAL_BAUDRATE  115200
+#endif
 /* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_DISPLAYUPDATE_PIN will go high when application enters timer ISR and go
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
@@ -126,7 +131,7 @@ void setup()
   long test;
   
 #ifdef DEBUG
-  Serial.begin(115200);
+  Serial.begin(DEBUG_SERIAL_BAUDRATE);
 #endif
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -226,6 +231,7 @@ void loop()
   
 #ifdef DEBUG
   digitalClockDisplay(currentTime);
+  delay(500);
 #endif
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
