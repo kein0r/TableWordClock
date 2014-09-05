@@ -5,12 +5,10 @@ Toughts:
 /*
  * !!!!!!!!
  * This sketch needs the following non-standard libraries (install them in the Arduino library directory):
- * TimerOne: http://www.arduino.cc/playground/Code/Timer1
  * Time: http://playground.arduino.cc/Code/Time (used in DS2321RTC lib)
  * !!!!!!!!
  
  */
-#include <TimerOne.h>
 #include <Time.h>
 #include <Wire.h>
 #include "TableWordClock.h"
@@ -18,9 +16,6 @@ Toughts:
 #include "DS3231RTC.h"
 
 /* ************************ Defines ************************************ */
-#define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
-#define TIME_UPDATE_DELAY_TIME   1*1000     /* time should be updated every 10 seconds. Delay is given in milli seconds (10e-3) */
-
 #define CLOCKSET_PIN                  1
 #define CLOCKSET_HOUR_INCREMENT_PIN   2  /* pin 2 uses int.0 */
 #define CLOCKSET_HOUR_PIN_INT         0
@@ -28,13 +23,13 @@ Toughts:
 #define CLOCKSET_MINUTE_PIN_INT       1
 
 //#define DEBUG
-/* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
+/* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_DISPLAYUPDATE_PIN will go high when application enters timer ISR and go
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
  */
 //#define DEBUG_RUNTIME_MEASUREMENT
 #ifdef DEBUG_RUNTIME_MEASUREMENT
-#define RUNTIME_ISR_PIN  0
+#define RUNTIME_DISPLAYUPDATE_PIN  0
 #define RUNTIME_LOOP_PIN 4
 #endif
 
@@ -143,12 +138,9 @@ void setup()
   pinMode(CLOCKSET_MINUTE_INCREMENT_PIN, INPUT_PULLUP);
   attachInterrupt(CLOCKSET_MINUTE_PIN_INT, incrementMinuteISR, RISING);
   
-  Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
-  Timer1.attachInterrupt(updateDisplayISR);
-
 #ifdef DEBUG_RUNTIME_MEASUREMENT
-  pinMode(RUNTIME_ISR_PIN, OUTPUT);
-  digitalWrite(RUNTIME_ISR_PIN, LOW);
+  pinMode(RUNTIME_DISPLAYUPDATE_PIN, OUTPUT);
+  digitalWrite(RUNTIME_DISPLAYUPDATE_PIN, LOW);
   pinMode(RUNTIME_LOOP_PIN, OUTPUT);
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
 #endif
@@ -224,24 +216,19 @@ void loop()
   clockPattern[row + 1] |= tableClockWordPattern[16].pattern;
   
   displayDriver.setPattern(clockPattern);  
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_DISPLAYUPDATE_PIN, HIGH);
+#endif
+  displayDriver.update();
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_DISPLAYUPDATE_PIN, LOW);
+#endif
   
 #ifdef DEBUG
   digitalClockDisplay(currentTime);
 #endif
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
-#endif
-  delay(TIME_UPDATE_DELAY_TIME);  
-}
-
-void updateDisplayISR()
-{
-#ifdef DEBUG_RUNTIME_MEASUREMENT
-  digitalWrite(RUNTIME_ISR_PIN, HIGH);
-#endif
-  displayDriver.update();
-#ifdef DEBUG_RUNTIME_MEASUREMENT
-  digitalWrite(RUNTIME_ISR_PIN, LOW);
 #endif
 }
 
