@@ -163,12 +163,10 @@ void loop()
 {  
  uint8_t row;
  
-#if 1
   static int ledstate = LOW;
   if (ledstate == LOW) ledstate = HIGH;
   else ledstate = LOW;
   digitalWrite(LED_BUILTIN, ledstate);
-#endif
 
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_LOOP_PIN, HIGH);
