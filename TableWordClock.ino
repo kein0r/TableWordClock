@@ -8,6 +8,8 @@ Toughts:
  * Time: http://playground.arduino.cc/Code/Time (used in DS2321RTC lib)
  * !!!!!!!!
  
+ * Data (marked D on DS3231 boards) must be connected to SDA (or Analog 4)
+ * Clock (marked C on DS3231 boards) must be connected to SCL (or Analog 5)
  */
 #include <Time.h>
 #include <Wire.h>
