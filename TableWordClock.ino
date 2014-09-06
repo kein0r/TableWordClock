@@ -161,8 +161,8 @@ void setup()
 
 void loop()
 {  
- uint8_t row;
- 
+  uint8_t row;
+   
   static int ledstate = LOW;
   if (ledstate == LOW) ledstate = HIGH;
   else ledstate = LOW;
