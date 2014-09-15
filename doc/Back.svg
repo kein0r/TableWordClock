@@ -3,32 +3,32 @@
 <svg width="87.72mm" height="87.72mm" viewBox="0 0 87.72 87.72" xmlns="http://www.w3.org/2000/svg" version="1.1">
 <g transform="translate(5.86,81.86) scale(1,-1)">
 <path id="Cut027" d="M -5.0 -4.0 L -5.0 80.0 L -5.0 80.0 L -5.0 -4.0 L -5.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<circle cx="75.0" cy="24.89" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<path id="Cut027" d="M -5.0 -4.0 A 1.0 1.0 0 0 0 -4.0 -5.0 L -4.0 -5.0 A 1.0 1.0 0 0 1 -5.0 -4.0 L -5.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<path id="Cut027" d="M -5.0 80.0 A 1.0 1.0 0 0 1 -4.0 81.0 L -4.0 81.0 A 1.0 1.0 0 0 0 -5.0 80.0 L -5.0 80.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<circle cx="75.0" cy="12.89" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="17.68" cy="26.51" r="0.889" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<path id="Cut027" d="M -5.0 -4.0 A 1.0 1.0 0 0 1 -4.0 -5.0 L -4.0 -5.0 A 1.0 1.0 0 0 0 -5.0 -4.0 L -5.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut027" d="M -5.0 80.0 A 1.0 1.0 0 0 0 -4.0 81.0 L -4.0 81.0 A 1.0 1.0 0 0 1 -5.0 80.0 L -5.0 80.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<circle cx="38.0" cy="30.0" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<path id="Cut027" d="M 68.0 42.0 L 68.0 42.0 A 8.0 8.0 0 1 1 60.0 34.0 A 8.0 8.0 0 0 1 68.0 42.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut027" d="M 24.0 42.0 L 24.0 42.0 A 8.0 8.0 0 1 1 16.0 34.0 A 8.0 8.0 0 0 1 24.0 42.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
 <path id="Cut027" d="M -4.0 -5.0 L 80.0 -5.0 L 80.0 -5.0 L -4.0 -5.0 L -4.0 -5.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
 <path id="Cut027" d="M -4.0 81.0 L 80.0 81.0 L 80.0 81.0 L -4.0 81.0 L -4.0 81.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<path id="Cut027" d="M 81.0 -4.0 A 1.0 1.0 0 0 1 80.0 -5.0 L 80.0 -5.0 A 1.0 1.0 0 0 0 81.0 -4.0 L 81.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<path id="Cut027" d="M 81.0 80.0 A 1.0 1.0 0 0 0 80.0 81.0 L 80.0 81.0 A 1.0 1.0 0 0 1 81.0 80.0 L 81.0 80.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut027" d="M 81.0 -4.0 A 1.0 1.0 0 0 0 80.0 -5.0 L 80.0 -5.0 A 1.0 1.0 0 0 1 81.0 -4.0 L 81.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut027" d="M 81.0 80.0 A 1.0 1.0 0 0 1 80.0 81.0 L 80.0 81.0 A 1.0 1.0 0 0 0 81.0 80.0 L 81.0 80.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
 <path id="Cut027" d="M 81.0 -4.0 L 81.0 80.0 L 81.0 80.0 L 81.0 -4.0 L 81.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<circle cx="75.0" cy="24.89" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="-1.5" cy="77.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="75.0" cy="12.89" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
 <circle cx="17.68" cy="26.51" r="0.889" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="38.0" cy="8.0" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="17.68" cy="11.27" r="0.889" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="77.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
 <circle cx="38.0" cy="30.0" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="75.0" cy="24.89" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="77.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
 <circle cx="58.32" cy="26.51" r="0.889" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
 <circle cx="58.32" cy="11.27" r="0.889" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="-1.5" cy="77.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
 <circle cx="77.5" cy="77.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="18.0" cy="42.0" r="6.0" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<circle cx="-1.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
-<path id="Cut027" d="M 40.0 56.582575695 L 40.0 56.582575695 A 2.0 2.0 0 0 0 36.0 56.5825756144 L 36.0 56.5825756144 A 2.0 2.0 0 0 1 40.0 56.582575695 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut027" d="M 40.0 56.582575695 L 40.0 56.582575695 A 2.0 2.0 0 0 1 36.0 56.5825756144 L 36.0 56.5825756144 A 2.0 2.0 0 0 0 40.0 56.582575695 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
 <path id="Cut027" d="M 36.0 56.5825756144 L 36.0 46.582575695 L 36.0 46.582575695 L 36.0 56.5825756144 L 36.0 56.5825756144 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
 <path id="Cut027" d="M 40.0 56.582575695 L 40.0 46.582575695 L 40.0 46.582575695 L 40.0 56.582575695 L 40.0 56.582575695 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<path id="Cut027" d="M 40.0 46.582575695 A 5.0 5.0 0 1 1 36.0 46.582575695 L 36.0 46.582575695 A 5.0 5.0 0 1 0 40.0 46.582575695 L 40.0 46.582575695 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
-<circle cx="58.0" cy="42.0" r="6.0" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<path id="Cut027" d="M 40.0 46.582575695 A 5.0 5.0 0 1 0 36.0 46.582575695 L 36.0 46.582575695 A 5.0 5.0 0 1 1 40.0 46.582575695 L 40.0 46.582575695 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<circle cx="17.68" cy="11.27" r="0.889" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="38.0" cy="8.0" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="75.0" cy="12.89" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="-1.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
 </g>
 </svg>
