@@ -29,7 +29,7 @@ Toughts:
 #define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
 #define CLOCKSET_MINUTE_PIN_INT       1
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DEBUG_SERIAL_BAUDRATE  115200
 #endif
