@@ -5,12 +5,14 @@ Toughts:
 /*
  * !!!!!!!!
  * This sketch needs the following non-standard libraries (install them in the Arduino library directory):
+ * TimerOne: http://www.arduino.cc/playground/Code/Timer1
  * Time: http://playground.arduino.cc/Code/Time (used in DS2321RTC lib)
  * !!!!!!!!
  
  * Data (marked D on DS3231 boards) must be connected to SDA (or Analog 4)
  * Clock (marked C on DS3231 boards) must be connected to SCL (or Analog 5)
  */
+#include <TimerOne.h>
 #include <Time.h>
 #include <Wire.h>
 #include "TableWordClock.h"
@@ -18,30 +20,30 @@ Toughts:
 #include "DS3231RTC.h"
 
 /* ************************ Defines ************************************ */
+#define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
+#define TIME_UPDATE_DELAY_TIME   500        /* Delay time between two time updated (i.e. read from RTC). Delay is given in milli seconds (10e-3) */
+
 #define CLOCKSET_PIN                  1
 #define CLOCKSET_HOUR_INCREMENT_PIN   2  /* pin 2 uses int.0 */
 #define CLOCKSET_HOUR_PIN_INT         0
 #define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
 #define CLOCKSET_MINUTE_PIN_INT       1
 
-/* DEBUG output via serial line. Display will not work but shortly flash because delay
- * of 500 ms is added to main loop */
 //#define DEBUG
 #ifdef DEBUG
 #define DEBUG_SERIAL_BAUDRATE  115200
 #endif
-/* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_DISPLAYUPDATE_PIN will go high when application enters timer ISR and go
+/* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
  */
 //#define DEBUG_RUNTIME_MEASUREMENT
 #ifdef DEBUG_RUNTIME_MEASUREMENT
-#define RUNTIME_DISPLAYUPDATE_PIN  0
+#define RUNTIME_ISR_PIN  0
 #define RUNTIME_LOOP_PIN 4
 #endif
 
 displayPattern_t clockPattern = {
-  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
   0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
 };
 
@@ -50,30 +52,30 @@ DisplayDriver displayDriver;
 /* patterns for words. Should be maybe reordered to make show hours easier */
 static const tableClockWordPattern_t tableClockWordPattern[] = 
 {
-  { 0, 0xfc00}, /* (xxx minutes/quarter) to ->     1111 1100 0000 0000 */
-  { 0, 0x03c0}, /* 2(0 minutes to) ->              0000 0011 1100 0000 */
-  { 0, 0x003f}, /* 10 (minutes) (to) ->            0000 0000 0011 1111 */
-  { 2, 0xff00}, /* one quearter (to) ->            1111 1111 0000 0000 */
-  { 2, 0x003f}, /* (xxx) minutes (to) ->           0000 0000 0011 1111 */
-  { 4, 0xfc00}, /* 1x (o'clock) ->                 1111 1100 0000 0000 */
-  { 4, 0x03c0}, /* x1 and 1 (o'clock) ->           0000 0011 1100 0000 */
-  { 4, 0x0030}, /* 2 (o'clock) ->                  0000 0000 0011 0000 */
-  { 4, 0x000f}, /* (1)2 (o'clock) ->               0000 0000 0000 1111 */
-  { 6, 0xfc00}, /* 3 (o'clock) ->                  1111 1100 0000 0000 */
-  { 6, 0x03c0}, /* 4 (o'clock) ->                  0000 0011 1100 0000 */
-  { 6, 0x003f}, /* 6 (o'clock) ->                  0000 0000 0011 1111 */
-  { 8, 0xf000}, /* 5 (o'clock) ->                  1111 0000 0000 0000 */
+  {0, 0xfc00}, /* (xxx minutes/quarter) to ->     1111 1100 0000 0000 */
+  {0, 0x03c0}, /* 2(0 minutes to) ->              0000 0011 1100 0000 */
+  {0, 0x003f}, /* 10 (minutes) (to) ->            0000 0000 0011 1111 */
+  {1, 0xff00}, /* one quearter (to) ->            1111 1111 0000 0000 */
+  {1, 0x003f}, /* (xxx) minutes (to) ->           0000 0000 0011 1111 */
+  {2, 0xfc00}, /* 1x (o'clock) ->                 1111 1100 0000 0000 */
+  {2, 0x03c0}, /* x1 and 1 (o'clock) ->           0000 0011 1100 0000 */
+  {2, 0x0030}, /* 2 (o'clock) ->                  0000 0000 0011 0000 */
+  {2, 0x000f}, /* (1)2 (o'clock) ->               0000 0000 0000 1111 */
+  {3, 0xfc00}, /* 3 (o'clock) ->                  1111 1100 0000 0000 */
+  {3, 0x03c0}, /* 4 (o'clock) ->                  0000 0011 1100 0000 */
+  {3, 0x003f}, /* 6 (o'clock) ->                  0000 0000 0011 1111 */
+  {4, 0xf000}, /* 5 (o'clock) ->                  1111 0000 0000 0000 */
   /* 0 o'lock is missing ??? */
-  { 8, 0x00fc}, /* 9 (o'clock) ->                  0000 0000 1111 1100 */
-  {10, 0xf000}, /* 7 (o'clock) ->                  1111 0000 0000 0000 */
-  {10, 0x0f00}, /* 8 (o'clock) ->                  0000 1111 0000 0000 */
-  {10, 0x00ff}, /* (xx) o'clock ->                 0000 0000 1111 1111 */
-  {12, 0xf000}, /* 1(quarter after) ->             1111 0000 0000 0000 */
-  {12, 0x0f00}, /* 2(0) mins after) ->             0000 1111 0000 0000 */
-  {12, 0x003f}, /* (x)0 (mins after) ->            0000 0000 0011 1111 */
-  {14, 0xf000}, /* (1) quater (after) ->           1111 0000 0000 0000 */
-  {14, 0x0fc0}, /* x:30 (after) ->                 0000 1111 1100 0000 */
-  {14, 0x003f}, /* (x) mins (after) ->             0000 0000 0011 1111 */
+  {4, 0x00fc}, /* 9 (o'clock) ->                  0000 0000 1111 1100 */
+  {5, 0xf000}, /* 7 (o'clock) ->                  1111 0000 0000 0000 */
+  {5, 0x0f00}, /* 8 (o'clock) ->                  0000 1111 0000 0000 */
+  {5, 0x00ff}, /* (xx) o'clock ->                 0000 0000 1111 1111 */
+  {6, 0xf000}, /* 1(quarter after) ->             1111 0000 0000 0000 */
+  {6, 0x0f00}, /* 2(0) mins after) ->             0000 1111 0000 0000 */
+  {6, 0x003f}, /* (x)0 (mins after) ->            0000 0000 0011 1111 */
+  {7, 0xf000}, /* (1) quater (after) ->           1111 0000 0000 0000 */
+  {7, 0x0fc0}, /* x:30 (after) ->                 0000 1111 1100 0000 */
+  {7, 0x003f}, /* (x) mins (after) ->             0000 0000 0011 1111 */
 };
 
 hoursToWordPatternMapping_t hoursToWordPatternMapping[] = {
@@ -144,9 +146,12 @@ void setup()
   pinMode(CLOCKSET_MINUTE_INCREMENT_PIN, INPUT_PULLUP);
   attachInterrupt(CLOCKSET_MINUTE_PIN_INT, incrementMinuteISR, RISING);
   
+  Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
+  Timer1.attachInterrupt(updateDisplayISR);
+
 #ifdef DEBUG_RUNTIME_MEASUREMENT
-  pinMode(RUNTIME_DISPLAYUPDATE_PIN, OUTPUT);
-  digitalWrite(RUNTIME_DISPLAYUPDATE_PIN, LOW);
+  pinMode(RUNTIME_ISR_PIN, OUTPUT);
+  digitalWrite(RUNTIME_ISR_PIN, LOW);
   pinMode(RUNTIME_LOOP_PIN, OUTPUT);
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
 #endif
@@ -192,7 +197,6 @@ void loop()
     {
       row = minutesToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
-      clockPattern[tableClockWordPattern[row].displayRow + 1] |= tableClockWordPattern[row].pattern;
     }
   }
   
@@ -209,7 +213,6 @@ void loop()
     {
       row = hoursToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
-      clockPattern[tableClockWordPattern[row].displayRow + 1] |= tableClockWordPattern[row].pattern;
     }
   }
   if (currentTime.Minute >= 40)
@@ -217,23 +220,26 @@ void loop()
   /* display o'clock always */
   row = tableClockWordPattern[16].displayRow;
   clockPattern[row] |= tableClockWordPattern[16].pattern;
-  clockPattern[row + 1] |= tableClockWordPattern[16].pattern;
   
   displayDriver.setPattern(clockPattern);  
-#ifdef DEBUG_RUNTIME_MEASUREMENT
-  digitalWrite(RUNTIME_DISPLAYUPDATE_PIN, HIGH);
-#endif
-  displayDriver.update();
-#ifdef DEBUG_RUNTIME_MEASUREMENT
-  digitalWrite(RUNTIME_DISPLAYUPDATE_PIN, LOW);
-#endif
   
 #ifdef DEBUG
   digitalClockDisplay(currentTime);
-  delay(500);
 #endif
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_LOOP_PIN, LOW);
+#endif
+  delay(TIME_UPDATE_DELAY_TIME);  
+}
+
+void updateDisplayISR()
+{
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_ISR_PIN, HIGH);
+#endif
+  displayDriver.update();
+#ifdef DEBUG_RUNTIME_MEASUREMENT
+  digitalWrite(RUNTIME_ISR_PIN, LOW);
 #endif
 }
 

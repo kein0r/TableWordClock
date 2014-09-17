@@ -10,7 +10,7 @@
  * update function should be called cylic
  */
 typedef uint16_t displayLine_t;
-typedef displayLine_t displayPattern_t[16];
+typedef displayLine_t displayPattern_t[8];
 
 #define DISPLAYDRIVER_CLEARDISPLAY  0xffff
 
@@ -18,6 +18,7 @@ class DisplayDriver
 {
 private:
   displayPattern_t displayRAM;
+  void clearLine(byte serialPin, byte clockPin); 
 
 public:
   DisplayDriver( void );
