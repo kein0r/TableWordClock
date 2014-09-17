@@ -40,10 +40,17 @@ void DisplayDriver::update(void)
   /* put a HIGH on row clk pin which will be shifted later */
   digitalWrite(DISPLAYDRIVER_ROW_DATA, HIGH);
   
-  for (uint8_t rowCounter = 0; rowCounter < 8; rowCounter++)
+  for (uint8_t rowCounter = 0; rowCounter < 16; rowCounter += 2)
   {
     /* set latch pin low before any new action */
     digitalWrite(DISPLAYDRIVER_ROW_LATCH, LOW);
+
+#ifdef DISPLAYDRIVER_CLEARDISPLAYBEFOREUPDATE
+    /* first clear display to avoid ghost effects */
+    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
+    clearLine(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK);
+    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
+#endif
 
     /* select row */
     /* generate two clock pulse to shift row by two (i.e. the two logical one) */
@@ -55,14 +62,6 @@ void DisplayDriver::update(void)
     digitalWrite(DISPLAYDRIVER_ROW_LATCH, HIGH);
     /* set data pin low again (actually only needed in first run) */
     digitalWrite(DISPLAYDRIVER_ROW_DATA, LOW);
-    
-#ifdef DISPLAYDRIVER_CLEARDISPLAYBEFOREUPDATE
-    /* first clear display to avoid ghost effects */
-    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
-    shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, DISPLAYDRIVER_CLEARDISPLAY);
-    shiftOut(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK, DISPLAYDRIVER_SHIFTORDER, DISPLAYDRIVER_CLEARDISPLAY);
-    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
-#endif
 
     /* now output data for the selected rows */
     if (displayRAM[rowCounter] != DISPLAYDRIVER_CLEARDISPLAY)
@@ -73,6 +72,27 @@ void DisplayDriver::update(void)
       digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
       //__asm__("nop\n\t""nop\n\t""nop\n\t""nop\n\t");
     };
+  }
+#ifdef DISPLAYDRIVER_CLEARDISPLAYBEFOREUPDATE
+    /* first clear display to avoid ghost effects */
+    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,LOW);
+    clearLine(DISPLAYDRIVER_RED_DATA, DISPLAYDRIVER_COLOR_CLK);
+    digitalWrite(DISPLAYDRIVER_COLOR_LATCH,HIGH);
+#endif
+}
+
+/**
+ * Function similar to shiftOut just that a constant value is shifted out.
+ * In addition it directly shifts out 16 bit.
+ */
+void DisplayDriver::clearLine(byte serialPin, byte clockPin)
+{
+  digitalWrite(clockPin, LOW);
+  digitalWrite(serialPin, DISPLAYDRIVER_CLEARDISPLAY);
+  for (byte i=0; i<16; i++)
+  {
+    digitalWrite(clockPin, HIGH);
+    digitalWrite(clockPin, LOW);
   }
 }
 

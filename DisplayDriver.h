@@ -18,6 +18,7 @@ class DisplayDriver
 {
 private:
   displayPattern_t displayRAM;
+  void clearLine(byte serialPin, byte clockPin); 
 
 public:
   DisplayDriver( void );
