@@ -40,7 +40,7 @@ void DisplayDriver::update(void)
   /* put a HIGH on row clk pin which will be shifted later */
   digitalWrite(DISPLAYDRIVER_ROW_DATA, HIGH);
   
-  for (uint8_t rowCounter = 0; rowCounter < 16; rowCounter += 2)
+  for (uint8_t rowCounter = 0; rowCounter < 8; rowCounter++)
   {
     /* set latch pin low before any new action */
     digitalWrite(DISPLAYDRIVER_ROW_LATCH, LOW);

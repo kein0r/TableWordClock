@@ -29,7 +29,7 @@ Toughts:
 #define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
 #define CLOCKSET_MINUTE_PIN_INT       1
 
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DEBUG_SERIAL_BAUDRATE  115200
 #endif
@@ -37,14 +37,13 @@ Toughts:
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
  */
-#define DEBUG_RUNTIME_MEASUREMENT
+//#define DEBUG_RUNTIME_MEASUREMENT
 #ifdef DEBUG_RUNTIME_MEASUREMENT
 #define RUNTIME_ISR_PIN  0
 #define RUNTIME_LOOP_PIN 4
 #endif
 
 displayPattern_t clockPattern = {
-  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
   0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
 };
 
@@ -53,30 +52,30 @@ DisplayDriver displayDriver;
 /* patterns for words. Should be maybe reordered to make show hours easier */
 static const tableClockWordPattern_t tableClockWordPattern[] = 
 {
-  { 0, 0xfc00}, /* (xxx minutes/quarter) to ->     1111 1100 0000 0000 */
-  { 0, 0x03c0}, /* 2(0 minutes to) ->              0000 0011 1100 0000 */
-  { 0, 0x003f}, /* 10 (minutes) (to) ->            0000 0000 0011 1111 */
-  { 2, 0xff00}, /* one quearter (to) ->            1111 1111 0000 0000 */
-  { 2, 0x003f}, /* (xxx) minutes (to) ->           0000 0000 0011 1111 */
-  { 4, 0xfc00}, /* 1x (o'clock) ->                 1111 1100 0000 0000 */
-  { 4, 0x03c0}, /* x1 and 1 (o'clock) ->           0000 0011 1100 0000 */
-  { 4, 0x0030}, /* 2 (o'clock) ->                  0000 0000 0011 0000 */
-  { 4, 0x000f}, /* (1)2 (o'clock) ->               0000 0000 0000 1111 */
-  { 6, 0xfc00}, /* 3 (o'clock) ->                  1111 1100 0000 0000 */
-  { 6, 0x03c0}, /* 4 (o'clock) ->                  0000 0011 1100 0000 */
-  { 6, 0x003f}, /* 6 (o'clock) ->                  0000 0000 0011 1111 */
-  { 8, 0xf000}, /* 5 (o'clock) ->                  1111 0000 0000 0000 */
+  {0, 0xfc00}, /* (xxx minutes/quarter) to ->     1111 1100 0000 0000 */
+  {0, 0x03c0}, /* 2(0 minutes to) ->              0000 0011 1100 0000 */
+  {0, 0x003f}, /* 10 (minutes) (to) ->            0000 0000 0011 1111 */
+  {1, 0xff00}, /* one quearter (to) ->            1111 1111 0000 0000 */
+  {1, 0x003f}, /* (xxx) minutes (to) ->           0000 0000 0011 1111 */
+  {2, 0xfc00}, /* 1x (o'clock) ->                 1111 1100 0000 0000 */
+  {2, 0x03c0}, /* x1 and 1 (o'clock) ->           0000 0011 1100 0000 */
+  {2, 0x0030}, /* 2 (o'clock) ->                  0000 0000 0011 0000 */
+  {2, 0x000f}, /* (1)2 (o'clock) ->               0000 0000 0000 1111 */
+  {3, 0xfc00}, /* 3 (o'clock) ->                  1111 1100 0000 0000 */
+  {3, 0x03c0}, /* 4 (o'clock) ->                  0000 0011 1100 0000 */
+  {3, 0x003f}, /* 6 (o'clock) ->                  0000 0000 0011 1111 */
+  {4, 0xf000}, /* 5 (o'clock) ->                  1111 0000 0000 0000 */
   /* 0 o'lock is missing ??? */
-  { 8, 0x00fc}, /* 9 (o'clock) ->                  0000 0000 1111 1100 */
-  {10, 0xf000}, /* 7 (o'clock) ->                  1111 0000 0000 0000 */
-  {10, 0x0f00}, /* 8 (o'clock) ->                  0000 1111 0000 0000 */
-  {10, 0x00ff}, /* (xx) o'clock ->                 0000 0000 1111 1111 */
-  {12, 0xf000}, /* 1(quarter after) ->             1111 0000 0000 0000 */
-  {12, 0x0f00}, /* 2(0) mins after) ->             0000 1111 0000 0000 */
-  {12, 0x003f}, /* (x)0 (mins after) ->            0000 0000 0011 1111 */
-  {14, 0xf000}, /* (1) quater (after) ->           1111 0000 0000 0000 */
-  {14, 0x0fc0}, /* x:30 (after) ->                 0000 1111 1100 0000 */
-  {14, 0x003f}, /* (x) mins (after) ->             0000 0000 0011 1111 */
+  {4, 0x00fc}, /* 9 (o'clock) ->                  0000 0000 1111 1100 */
+  {5, 0xf000}, /* 7 (o'clock) ->                  1111 0000 0000 0000 */
+  {5, 0x0f00}, /* 8 (o'clock) ->                  0000 1111 0000 0000 */
+  {5, 0x00ff}, /* (xx) o'clock ->                 0000 0000 1111 1111 */
+  {6, 0xf000}, /* 1(quarter after) ->             1111 0000 0000 0000 */
+  {6, 0x0f00}, /* 2(0) mins after) ->             0000 1111 0000 0000 */
+  {6, 0x003f}, /* (x)0 (mins after) ->            0000 0000 0011 1111 */
+  {7, 0xf000}, /* (1) quater (after) ->           1111 0000 0000 0000 */
+  {7, 0x0fc0}, /* x:30 (after) ->                 0000 1111 1100 0000 */
+  {7, 0x003f}, /* (x) mins (after) ->             0000 0000 0011 1111 */
 };
 
 hoursToWordPatternMapping_t hoursToWordPatternMapping[] = {
@@ -198,7 +197,6 @@ void loop()
     {
       row = minutesToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
-      clockPattern[tableClockWordPattern[row].displayRow + 1] |= tableClockWordPattern[row].pattern;
     }
   }
   
@@ -215,7 +213,6 @@ void loop()
     {
       row = hoursToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
-      clockPattern[tableClockWordPattern[row].displayRow + 1] |= tableClockWordPattern[row].pattern;
     }
   }
   if (currentTime.Minute >= 40)
@@ -223,7 +220,6 @@ void loop()
   /* display o'clock always */
   row = tableClockWordPattern[16].displayRow;
   clockPattern[row] |= tableClockWordPattern[16].pattern;
-  clockPattern[row + 1] |= tableClockWordPattern[16].pattern;
   
   displayDriver.setPattern(clockPattern);  
   
