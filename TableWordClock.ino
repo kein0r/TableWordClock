@@ -19,8 +19,18 @@ Toughts:
 #include "DisplayDriver.h"
 #include "DS3231RTC.h"
 
+/* 
+ * Latest measurement:
+ * ISR runs approx 2.3ms
+ * loop runs 320uS
+ * DISPLAY_REFRESHTIME was chosen such that MAIN_LOOP runs approx with specified time.
+ * DisplayRefreshTime 5ms -> loop 680ms
+ * DisplayRefreshTime 4ms -> loop 740ms
+ * DisplayRefreshTime 3ms -> loop 900ms
+ */
+
 /* ************************ Defines ************************************ */
-#define DISPLAY_REFRESHTIME      10*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
+#define DISPLAY_REFRESHTIME      4*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
 #define TIME_UPDATE_DELAY_TIME   500        /* Delay time between two time updated (i.e. read from RTC). Delay is given in milli seconds (10e-3) */
 
 #define CLOCKSET_PIN                  1
