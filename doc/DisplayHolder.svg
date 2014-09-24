@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="87.72mm" height="11.72mm" viewBox="0 0 87.72 11.72" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<g transform="translate(5.86,5.86) scale(1,-1)">
+<path id="Cut043" d="M -5.0 -4.0 L -5.0 4.0 L -5.0 4.0 L -5.0 -4.0 L -5.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<circle cx="77.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<path id="Cut043" d="M -5.0 -4.0 A 1.0 1.0 0 0 1 -4.0 -5.0 L -4.0 -5.0 A 1.0 1.0 0 0 0 -5.0 -4.0 L -5.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut043" d="M -5.0 4.0 A 1.0 1.0 0 0 0 -4.0 5.0 L -4.0 5.0 A 1.0 1.0 0 0 1 -5.0 4.0 L -5.0 4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<circle cx="77.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<path id="Cut043" d="M -4.0 -5.0 L 80.0 -5.0 L 80.0 -5.0 L -4.0 -5.0 L -4.0 -5.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut043" d="M -4.0 5.0 L 80.0 5.0 L 80.0 5.0 L -4.0 5.0 L -4.0 5.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut043" d="M 81.0 -4.0 A 1.0 1.0 0 0 0 80.0 -5.0 L 80.0 -5.0 A 1.0 1.0 0 0 1 81.0 -4.0 L 81.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut043" d="M 81.0 4.0 A 1.0 1.0 0 0 1 80.0 5.0 L 80.0 5.0 A 1.0 1.0 0 0 0 81.0 4.0 L 81.0 4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<path id="Cut043" d="M 81.0 -4.0 L 81.0 4.0 L 81.0 4.0 L 81.0 -4.0 L 81.0 -4.0 Z " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc;fill-rule: evenodd "/>
+<circle cx="77.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+<circle cx="-1.5" cy="-1.5" r="1.5" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:#cccccc"/>
+</g>
+</svg>
