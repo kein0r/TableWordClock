@@ -158,7 +158,7 @@ void setup()
   attachInterrupt(CLOCKSET_MINUTE_PIN_INT, incrementMinuteISR, RISING);
   
   Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
-  //Timer1.attachInterrupt(updateDisplayISR);
+  Timer1.attachInterrupt(updateDisplayISR);
 
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   pinMode(RUNTIME_ISR_PIN, OUTPUT);
