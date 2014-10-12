@@ -33,7 +33,6 @@ Toughts:
 #define DISPLAY_REFRESHTIME      4*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
 #define TIME_UPDATE_DELAY_TIME   500        /* Delay time between two time updated (i.e. read from RTC). Delay is given in milli seconds (10e-3) */
 
-#define CLOCKSET_PIN                  1
 #define CLOCKSET_HOUR_INCREMENT_PIN   2  /* pin 2 uses int.0 */
 #define CLOCKSET_HOUR_PIN_INT         0
 #define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
@@ -150,10 +149,11 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   /* configure input buttons */
-  pinMode(CLOCKSET_PIN, INPUT_PULLUP);
   pinMode(CLOCKSET_HOUR_INCREMENT_PIN, INPUT_PULLUP);
-  attachInterrupt(CLOCKSET_HOUR_PIN_INT, incrementHourISR, RISING);
   pinMode(CLOCKSET_MINUTE_INCREMENT_PIN, INPUT_PULLUP);
+  /* clear possible interrupt flag due to above pull-up set prior to enabling the ISRs */
+  EIFR = 0x03;
+  attachInterrupt(CLOCKSET_HOUR_PIN_INT, incrementHourISR, RISING);
   attachInterrupt(CLOCKSET_MINUTE_PIN_INT, incrementMinuteISR, RISING);
   
   Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
@@ -170,9 +170,6 @@ void setup()
   /* RTC.set(1408852621L + (8*60*60L)); */
 }
 
-/** TODO:
- * - Check type for delay function
- */
 
 void loop()
 {  
