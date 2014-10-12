@@ -38,10 +38,14 @@ Toughts:
 #define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
 #define CLOCKSET_MINUTE_PIN_INT       1
 
+/*  code to process time sync messages from the serial port   */
+#define TIME_HEADER  "T"   // Header tag for serial time sync message
+#define TIME_TIMEZONE  8L   // UTC offset to be added when setting time via PC
+
+#define SERIAL_BAUDRATE  115200
+
 //#define DEBUG
-#ifdef DEBUG
-#define DEBUG_SERIAL_BAUDRATE  115200
-#endif
+
 /* If DEBUG_RUNTIME_MEASUREMENT is defined PIN RUNTIME_ISR_PIN will go high when application enters timer ISR and go
  * low when ISR is left. PIN RUNTIME_LOOP_PIN will go high when loop function is entered and low right before the final
  * delay() call.
@@ -126,7 +130,7 @@ minutesToWordPatternMapping_t minutesToWordPatternMapping[] = {
   {50, 59,  4}, /* minutes */
 };
 
-boolean writeTime = false;    /* whenever this variable is set to true current time will be writte to RTC in main loop */
+boolean updateTimeOfRTC = false;    /* whenever this variable is set to true current time will be writte to RTC in main loop */
 tmElements_t currentTime;
 
 /* ************************ Function prototypes ************************ */
@@ -140,11 +144,8 @@ void serialPrintBinary(uint16_t);
 #endif
 
 void setup()
-{  
-  
-#ifdef DEBUG
-  Serial.begin(DEBUG_SERIAL_BAUDRATE);
-#endif
+{
+  Serial.begin(SERIAL_BAUDRATE);
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
@@ -170,6 +171,21 @@ void setup()
   /* RTC.set(1408852621L + (8*60*60L)); */
 }
 
+unsigned long processSyncMessage() {
+  unsigned long pctime = 0L;
+  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013 
+
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+     /* add local time zone */
+     pctime += (TIME_TIMEZONE*60*60L);
+     return pctime;
+     if( pctime < DEFAULT_TIME) { // check the value is a valid time (greater than Jan 1 2013)
+       pctime = 0L; // return 0 to indicate that the time is not valid
+     }
+  }
+  return pctime;
+}
 
 void loop()
 {  
@@ -184,10 +200,24 @@ void loop()
   digitalWrite(RUNTIME_LOOP_PIN, HIGH);
 #endif
 
-  if (writeTime)
+  /* to be able to set time from PC by using "date +T%s > /dev/ttyUSB0" */
+  if (Serial.available()) {
+    Timer1.detachInterrupt();
+    time_t t = processSyncMessage();
+    if (t != 0) {
+      breakTime(t, currentTime);
+      updateTimeOfRTC = true;
+    }
+    Timer1.attachInterrupt(updateDisplayISR);
+  }
+
+  if (updateTimeOfRTC)
   {
+#ifdef DEBUG
+    Serial.println("Time was updated!");
+#endif
     RTC.write(currentTime);
-    writeTime = false;
+    updateTimeOfRTC = false;
   }
   else
   {
@@ -252,20 +282,20 @@ void updateDisplayISR()
 
 void incrementHourISR()
 {
-  if (writeTime == false)
+  if (updateTimeOfRTC == false)
   {
     currentTime.Hour++;
     currentTime.Hour %= 12;
-    writeTime = true;
+    updateTimeOfRTC = true;
   }
 }
 
 void incrementMinuteISR(){
-  if (writeTime == false)
+  if (updateTimeOfRTC == false)
   {
     currentTime.Minute++;
     currentTime.Minute %= 60;
-    writeTime = true;
+    updateTimeOfRTC = true;
   }
 }
 
