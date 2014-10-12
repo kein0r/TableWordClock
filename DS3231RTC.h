@@ -12,6 +12,7 @@ public:
   static time_t get();
   static void set(time_t t);
   static void read(tmElements_t &tm);
+  static void readFast( tmElements_t &tm);
   static void write(tmElements_t &tm);
   float getTemp();
 

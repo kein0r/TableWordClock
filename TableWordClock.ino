@@ -158,7 +158,7 @@ void setup()
   attachInterrupt(CLOCKSET_MINUTE_PIN_INT, incrementMinuteISR, RISING);
   
   Timer1.initialize(DISPLAY_REFRESHTIME); /* initialize timer1, and set period for cyclic update of display content  */
-  Timer1.attachInterrupt(updateDisplayISR);
+  //Timer1.attachInterrupt(updateDisplayISR);
 
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   pinMode(RUNTIME_ISR_PIN, OUTPUT);
@@ -190,6 +190,7 @@ unsigned long processSyncMessage() {
 void loop()
 {  
   uint8_t row;
+  uint8_t displayHour; /* temporary variable to select hour to display for XX before YY */
    
   static int ledstate = LOW;
   if (ledstate == LOW) ledstate = HIGH;
@@ -221,7 +222,7 @@ void loop()
   }
   else
   {
-    RTC.read(currentTime);
+    RTC.readFast(currentTime);
   }
 
   /* erase clock pattern */
@@ -237,23 +238,23 @@ void loop()
     }
   }
   
-   /* If minutes are greater than 39, clock switches to XXX before YYY. Thus we need to increase hour 
-   * by one */
+   /* If minutes are greater than 39, display clock switches to XXX before YYY. Thus we need to increase hour
+   * by one. Therefore we use a temporary variable for this. */
+  displayHour = currentTime.Hour;
   if (currentTime.Minute >= 40)
-    currentTime.Hour++;
+    displayHour++;
   /* make sure clock stays within 0 ... 11 */
-  currentTime.Hour %= 12;
+  displayHour %= 12;
   
   for (int i=0; i < sizeof(hoursToWordPatternMapping)/sizeof(hoursToWordPatternMapping_t); i++)
   {
-    if ( currentTime.Hour ==  hoursToWordPatternMapping[i].hour)
+    if ( displayHour ==  hoursToWordPatternMapping[i].hour)
     {
       row = hoursToWordPatternMapping[i].row;
       clockPattern[tableClockWordPattern[row].displayRow] |= tableClockWordPattern[row].pattern;
     }
   }
-  if (currentTime.Minute >= 40)
-    currentTime.Hour--;
+
   /* display o'clock always */
   row = tableClockWordPattern[16].displayRow;
   clockPattern[row] |= tableClockWordPattern[16].pattern;

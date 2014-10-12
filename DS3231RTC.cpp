@@ -66,6 +66,21 @@ void DS3231::read( tmElements_t &tm)
   tm.Year = y2kYearToTm((bcd2dec(Wire.read())));
 }
 
+// Aquire minimum data to show time
+void DS3231::readFast( tmElements_t &tm)
+{
+  Wire.beginTransmission(DS3231_I2C_ID);
+  Wire.write(0x00);
+  Wire.endTransmission();
+
+  // request only the first 3 data fields (secs, min, hr)
+  Wire.requestFrom(DS3231_I2C_ID, 3);
+
+  tm.Second = bcd2dec(Wire.read() & 0x7f);
+  tm.Minute = bcd2dec(Wire.read() );
+  tm.Hour = bcd2dec(Wire.read() & 0x3f); // mask assumes 24hr clock
+}
+
 void DS3231::write(tmElements_t &tm)
 {
   Wire.beginTransmission(DS3231_I2C_ID);
