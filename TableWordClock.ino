@@ -30,13 +30,16 @@ Toughts:
  */
 
 /* ************************ Defines ************************************ */
-#define DISPLAY_REFRESHTIME      4*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
-#define TIME_UPDATE_DELAY_TIME   500        /* Delay time between two time updated (i.e. read from RTC). Delay is given in milli seconds (10e-3) */
+#define DISPLAY_REFRESHTIME              4*1000L   /* Timer1 perdiod is measured in microseconds (10e-6). Don't omit the "L", if so it will not work */
+#define TIME_UPDATE_DELAY_TIME           500       /* Delay time between two time updated (i.e. read from RTC). Delay is given in milli seconds (10e-3) */
+#define disableTimerOverflowInterrupt()  TIMSK1 &= ~_BV(TOIE1);  /* disbale time overflow interrupt */
+#define enableTimerOverflowInterrupt()   TIMSK1 = _BV(TOIE1);  /* enable timer overflow interrupt again */
 
-#define CLOCKSET_HOUR_INCREMENT_PIN   2  /* pin 2 uses int.0 */
-#define CLOCKSET_HOUR_PIN_INT         0
-#define CLOCKSET_MINUTE_INCREMENT_PIN 3  /* pin 3 uses int.1 */
-#define CLOCKSET_MINUTE_PIN_INT       1
+#define CLOCKSET_HOUR_INCREMENT_PIN    2  /* pin 2 uses int.0 */
+#define CLOCKSET_HOUR_PIN_INT          0
+#define CLOCKSET_MINUTE_INCREMENT_PIN  3  /* pin 3 uses int.1 */
+#define CLOCKSET_MINUTE_PIN_INT        1
+#define CLOCKSET_DEBOUNCE_COUNTER_MAX  10
 
 /*  code to process time sync messages from the serial port   */
 #define TIME_HEADER  "T"   // Header tag for serial time sync message
@@ -132,6 +135,8 @@ minutesToWordPatternMapping_t minutesToWordPatternMapping[] = {
 
 boolean updateTimeOfRTC = false;    /* whenever this variable is set to true current time will be writte to RTC in main loop */
 tmElements_t currentTime;
+uint8_t minuteButtonPushCounter = CLOCKSET_DEBOUNCE_COUNTER_MAX;  /* Used to debounce minute button */
+uint8_t hourButtonPushCounter = CLOCKSET_DEBOUNCE_COUNTER_MAX;    /* Used to debounce hour button */
 
 /* ************************ Function prototypes ************************ */
 
@@ -193,9 +198,8 @@ void loop()
   uint8_t displayHour; /* temporary variable to select hour to display for XX before YY */
    
   static int ledstate = LOW;
-  if (ledstate == LOW) ledstate = HIGH;
-  else ledstate = LOW;
   digitalWrite(LED_BUILTIN, ledstate);
+  ledstate = ~ ledstate;
 
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_LOOP_PIN, HIGH);
@@ -203,13 +207,13 @@ void loop()
 
   /* to be able to set time from PC by using "date +T%s > /dev/ttyUSB0" */
   if (Serial.available()) {
-    Timer1.detachInterrupt();
+    disableTimerOverflowInterrupt();
     time_t t = processSyncMessage();
     if (t != 0) {
       breakTime(t, currentTime);
       updateTimeOfRTC = true;
     }
-    Timer1.attachInterrupt(updateDisplayISR);
+    enableTimerOverflowInterrupt();
   }
 
   if (updateTimeOfRTC)
@@ -217,7 +221,9 @@ void loop()
 #ifdef DEBUG
     Serial.println("Time was updated!");
 #endif
+    disableTimerOverflowInterrupt();
     RTC.write(currentTime);
+    enableTimerOverflowInterrupt();
     updateTimeOfRTC = false;
   }
   else
@@ -270,7 +276,7 @@ void loop()
   delay(TIME_UPDATE_DELAY_TIME);  
 }
 
-void updateDisplayISR()
+inline void updateDisplayISR()
 {
 #ifdef DEBUG_RUNTIME_MEASUREMENT
   digitalWrite(RUNTIME_ISR_PIN, HIGH);
@@ -281,23 +287,33 @@ void updateDisplayISR()
 #endif
 }
 
-void incrementHourISR()
+uint8_t ledstate = LOW;
+inline void incrementHourISR()
 {
-  if (updateTimeOfRTC == false)
+  /* debounce pin */
+  while ((digitalRead(CLOCKSET_HOUR_INCREMENT_PIN) == LOW) && hourButtonPushCounter)
+    hourButtonPushCounter--;
+  if (hourButtonPushCounter == 0)
   {
     currentTime.Hour++;
     currentTime.Hour %= 12;
     updateTimeOfRTC = true;
   }
+  hourButtonPushCounter = CLOCKSET_DEBOUNCE_COUNTER_MAX;
 }
 
-void incrementMinuteISR(){
-  if (updateTimeOfRTC == false)
+inline void incrementMinuteISR()
+{
+  /* debounce pin */
+  while ((digitalRead(CLOCKSET_MINUTE_INCREMENT_PIN) == LOW) && minuteButtonPushCounter)
+    minuteButtonPushCounter--;
+  if (minuteButtonPushCounter == 0)
   {
     currentTime.Minute++;
     currentTime.Minute %= 60;
     updateTimeOfRTC = true;
   }
+  minuteButtonPushCounter = CLOCKSET_DEBOUNCE_COUNTER_MAX;
 }
 
 
