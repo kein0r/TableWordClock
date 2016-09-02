@@ -2,6 +2,7 @@
 #define DS3231RTC_h
 
 #include <Time.h>
+#include <TimeLib.h>
 
 // library interface description
 class DS3231
